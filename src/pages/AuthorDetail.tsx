@@ -19,6 +19,32 @@ const AuthorDetail = () => {
   // Derive author directly — no intermediate state, no flash
   const author = loading ? undefined : (authors.find((a) => a.id === id) ?? null);
 
+  // SEO Metadata — moved before early returns to comply with Rules of Hooks
+  useEffect(() => {
+    if (!author) return;
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": author.name,
+      "birthDate": String(author.born),
+      "deathDate": author.died ? String(author.died) : undefined,
+      "nationality": author.nationality,
+      "image": author.portrait,
+      "description": author.shortBio,
+      "url": `https://inktella.onspace.app/author/${author.id}`,
+      "knowsAbout": author.stories.map(s => ({
+        "@type": s.type === "novel" ? "Book" : "CreativeWork",
+        "name": s.title,
+        "genre": s.genre,
+      })),
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify(schema, null, 2);
+    document.head.appendChild(script);
+    return () => script.remove();
+  }, [author]);
+
   if (loading || author === undefined) {
     return (
       <div className="min-h-screen bg-background">
@@ -51,31 +77,6 @@ const AuthorDetail = () => {
   const lifespan = author.died
     ? `${author.born} – ${author.died}`
     : `b. ${author.born}`;
-
-  // SEO Metadata
-  useEffect(() => {
-    const schema = {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": author.name,
-      "birthDate": String(author.born),
-      "deathDate": author.died ? String(author.died) : undefined,
-      "nationality": author.nationality,
-      "image": author.portrait,
-      "description": author.shortBio,
-      "url": `https://inktella.onspace.app/author/${author.id}`,
-      "knowsAbout": author.stories.map(s => ({
-        "@type": s.type === "novel" ? "Book" : "CreativeWork",
-        "name": s.title,
-        "genre": s.genre,
-      })),
-    };
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.textContent = JSON.stringify(schema, null, 2);
-    document.head.appendChild(script);
-    return () => script.remove();
-  }, [author]);
 
   const description = `${author.name} (${lifespan}) - ${author.shortBio}`;
   const authorWorks = `${novels.length} novel${novels.length !== 1 ? "s" : ""} and ${shortStories.length} short stor${shortStories.length !== 1 ? "ies" : "y"}`;
