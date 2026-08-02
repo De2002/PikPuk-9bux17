@@ -115,8 +115,8 @@ function NovelForm({ initial, authors, onSave, onCancel, saving }: NovelFormProp
     year: null, genre: "", cover_url: "", description: "",
     synopsis: null, themes: [], pages: null, read_time: null,
     free_chapters: 2, is_active: true,
-    ...initial,
     type: "novel" as const,
+    ...initial,
   });
   const [autoId, setAutoId] = useState(!initial?.id);
   const [quotes, setQuotes] = useState<{ text: string; context: string }[]>(
@@ -266,8 +266,8 @@ function ShortStoryForm({ initial, authors, onSave, onCancel, saving }: ShortSto
     year: null, genre: "", cover_url: "", description: "",
     synopsis: null, themes: [], pages: null, read_time: null,
     free_chapters: 0, is_active: true,
-    ...initial,
     type: "short-story" as const,
+    ...initial,
   });
   const [autoId, setAutoId] = useState(!initial?.id);
   const [quotes, setQuotes] = useState<{ text: string; context: string }[]>(
