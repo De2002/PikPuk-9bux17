@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { BookOpen, Feather, LogIn, LogOut, User, Bookmark } from "lucide-react";
+import { BookOpen, LogIn, LogOut, Bookmark } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { authService } from "@/lib/auth";
@@ -25,67 +25,57 @@ const Navbar = () => {
 
   return (
     <>
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border">
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+    <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-full bg-foreground flex items-center justify-center">
-            <Feather className="w-4 h-4 text-background" />
-          </div>
-          <span className="font-serif text-xl font-bold tracking-tight text-foreground">
+          <span className="font-serif text-lg font-bold tracking-tight text-foreground">
             Inktella
           </span>
-          <span className="text-xs text-muted-foreground font-sans tracking-widest uppercase ml-1 hidden sm:block">
-            Classics Library
-          </span>
         </Link>
-        <div className="flex items-center gap-6">
+
+        <div className="flex items-center gap-1 sm:gap-2">
           <Link
             to="/"
-            className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-secondary/50"
           >
-            <BookOpen className="w-4 h-4" />
-            <span className="hidden sm:block">Authors</span>
+            <span className="hidden sm:inline">Browse</span>
+            <span className="sm:hidden"><BookOpen className="w-4 h-4" /></span>
           </Link>
 
           {!loading && user && (
             <Link
               to="/bookmarks"
-              className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-secondary/50"
             >
-              <Bookmark className="w-4 h-4" />
-              <span className="hidden sm:block">Bookmarks</span>
+              <span className="hidden sm:inline">Bookmarks</span>
+              <span className="sm:hidden"><Bookmark className="w-4 h-4" /></span>
             </Link>
           )}
 
           {!loading && (
             user ? (
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5 text-sm font-sans text-muted-foreground">
-                  <User className="w-3.5 h-3.5" />
-                  <span className="hidden sm:block max-w-[100px] truncate">{user.username}</span>
-                </div>
+              <div className="flex items-center gap-1">
                 <button
                   onClick={handleSignOut}
-                  className="flex items-center gap-1.5 text-xs font-sans text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-secondary"
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-secondary/50"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span className="hidden sm:block">Sign out</span>
+                  <span className="hidden sm:inline">Sign out</span>
+                  <span className="sm:hidden"><LogOut className="w-4 h-4" /></span>
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 ml-1">
                 <button
                   onClick={openSignin}
-                  className="text-xs font-sans font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-secondary/50"
                 >
                   Sign in
                 </button>
                 <button
                   onClick={openSignup}
-                  className="flex items-center gap-1.5 text-xs font-sans font-semibold bg-foreground text-background px-4 py-2 rounded-full hover:bg-foreground/90 transition-all"
+                  className="text-sm font-semibold bg-foreground text-background px-4 py-2 rounded-lg hover:bg-foreground/90 transition-all"
                 >
-                  <LogIn className="w-3.5 h-3.5" />
-                  <span>Join free</span>
+                  Join
                 </button>
               </div>
             )
