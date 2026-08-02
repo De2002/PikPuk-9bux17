@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { BookOpen, LogIn, LogOut, Bookmark } from "lucide-react";
+import { LogOut, Bookmark } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { authService } from "@/lib/auth";
@@ -34,14 +34,6 @@ const Navbar = () => {
         </Link>
 
         <div className="flex items-center gap-1 sm:gap-2">
-          <Link
-            to="/"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-secondary/50"
-          >
-            <span className="hidden sm:inline">Browse</span>
-            <span className="sm:hidden"><BookOpen className="w-4 h-4" /></span>
-          </Link>
-
           {!loading && user && (
             <Link
               to="/bookmarks"
