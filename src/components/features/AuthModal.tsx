@@ -79,7 +79,7 @@ const AuthModal = ({ open, onClose, defaultMode = "signup" }: AuthModalProps) =>
     try {
       const u = await authService.verifyOtpAndSetPassword(email, otp, password, username || email.split("@")[0]);
       login(authService.mapUser(u));
-      toast.success("Account created — welcome to PikPuk!");
+      toast.success("Account created — welcome to Inktella!");
       handleClose();
     } catch (err: any) {
       toast.error(err.message || "Account creation failed.");
@@ -100,7 +100,7 @@ const AuthModal = ({ open, onClose, defaultMode = "signup" }: AuthModalProps) =>
         <div className="bg-foreground px-6 py-5 flex items-start justify-between">
           <div>
             <p className="text-background/60 font-sans text-xs tracking-widest uppercase mb-1">
-              PikPuk · {stepLabel}
+              Inktella · {stepLabel}
             </p>
             <h2 className="font-serif text-2xl font-bold text-background">
               {mode === "signin"

@@ -41,7 +41,7 @@ const Privacy = () => (
     <div className="max-w-3xl mx-auto px-6 py-14 space-y-12">
 
       <p className="font-sans text-base text-foreground/70 leading-relaxed border-l-4 border-border pl-5">
-        Your privacy matters to us. This Privacy Policy explains what information PikPuk collects,
+        Your privacy matters to us. This Privacy Policy explains what information Inktella collects,
         how we use it, and what choices you have. We aim to collect only what is necessary and
         to be fully transparent about how it is handled.
       </p>
@@ -57,7 +57,7 @@ const Privacy = () => (
           never shared with third parties.
         </p>
         <p><strong className="text-foreground font-semibold">Guest usage:</strong>{" "}
-          If you read without an account, we store limited data in your browser's local storage —
+          If you read without an account, we store limited data in your browser's local storage (using Inktella keys) —
           specifically, a count and timestamp of short stories read in the current week.
           This data never leaves your device and is not sent to our servers.
         </p>
@@ -77,8 +77,7 @@ const Privacy = () => (
           <li>To comply with legal obligations where required.</li>
         </ul>
         <p>
-          We do not sell your personal data. We do not use your data for advertising or
-          share it with marketing partners.
+          We do not sell your personal data. We do not use your data for advertising or share it with marketing partners. Inktella is committed to protecting your privacy.
         </p>
       </Section>
 
@@ -117,7 +116,7 @@ const Privacy = () => (
           </li>
           <li>
             <strong className="text-foreground font-semibold">Guest reading state:</strong>{" "}
-            A weekly counter stored in local storage to track short story access for
+            A weekly counter stored in local storage (under Inktella keys) to track short story access for
             non-authenticated users. No personal identifiers are stored.
           </li>
         </ul>
@@ -138,8 +137,8 @@ const Privacy = () => (
         </ul>
         <p>
           To exercise any of these rights, contact us at{" "}
-          <a href="mailto:hello@pikpuk.com" className="underline underline-offset-2 text-foreground hover:text-foreground/70 transition-colors">
-            hello@pikpuk.com
+          <a href="mailto:hello@inktella.com" className="underline underline-offset-2 text-foreground hover:text-foreground/70 transition-colors">
+            hello@inktella.com
           </a>.
           We will respond within 30 days.
         </p>
@@ -147,7 +146,7 @@ const Privacy = () => (
 
       <Section title="7. Children's Privacy">
         <p>
-          PikPuk is not directed at children under the age of 13. We do not knowingly collect
+          Inktella is not directed at children under the age of 13. We do not knowingly collect
           personal information from children under 13. If you believe a child has provided
           us with personal data, please contact us and we will delete it promptly.
         </p>
@@ -169,8 +168,8 @@ const Privacy = () => (
         <p>
           If you have questions or concerns about this Privacy Policy or how we handle your data,
           please contact us at{" "}
-          <a href="mailto:hello@pikpuk.com" className="underline underline-offset-2 text-foreground hover:text-foreground/70 transition-colors">
-            hello@pikpuk.com
+          <a href="mailto:hello@inktella.com" className="underline underline-offset-2 text-foreground hover:text-foreground/70 transition-colors">
+            hello@inktella.com
           </a>.
         </p>
       </Section>

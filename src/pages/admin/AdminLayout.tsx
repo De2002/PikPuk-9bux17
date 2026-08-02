@@ -62,7 +62,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">
             <Feather className="w-3.5 h-3.5 text-white" />
           </div>
-          <span className="font-serif text-base font-bold tracking-tight">PikPuk</span>
+          <span className="font-serif text-base font-bold tracking-tight">Inktella</span>
           <span className="ml-1 text-[10px] font-sans uppercase tracking-widest text-white/40">Admin</span>
         </div>
 

@@ -30,7 +30,7 @@ const THEMES: Record<Theme, {
 };
 
 // Track short story reads per week in localStorage
-const SS_KEY = "pikpuk_ss_reads";
+const SS_KEY = "inktella_ss_reads";
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 function getSSReads(): { count: number; weekStart: number; ids: string[] } {
@@ -100,11 +100,11 @@ const ShortStoryReader = () => {
 
   useEffect(() => {
     if (!story || !author) return;
-    document.title = `${story.title} by ${author.name} — PikPuk Classics`;
+    document.title = `${story.title} by ${author.name} — Inktella Classics`;
     window.scrollTo({ top: 0 });
     // Record the read for guests
     if (!user && id) recordSSRead(id);
-    return () => { document.title = "PikPuk — Classics Library"; };
+    return () => { document.title = "Inktella — Classics Library"; };
   }, [story, author, user, id]);
 
   useEffect(() => {
@@ -156,7 +156,7 @@ const ShortStoryReader = () => {
         </div>
         <h2 className="font-serif text-2xl font-bold text-foreground mb-2">Come back next week</h2>
         <p className="font-sans text-sm text-muted-foreground max-w-xs mb-8 leading-relaxed">
-          Free readers get 1 short story per week. Create a free account for unlimited access.
+          Free readers get 1 short story per week. Create a free account for unlimited access to Inktella.
         </p>
         <div className="flex flex-col gap-3 w-full max-w-xs">
           <button

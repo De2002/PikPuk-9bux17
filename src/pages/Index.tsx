@@ -25,7 +25,7 @@ const Index = () => {
       <div className="relative h-64 sm:h-72 md:h-80 overflow-hidden">
         <img
           src="https://images.pexels.com/photos/936133/pexels-photo-936133.jpeg"
-          alt="PikPuk Classics Library"
+          alt="Inktella Classics Library"
           className="w-full h-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/60 to-foreground/20" />

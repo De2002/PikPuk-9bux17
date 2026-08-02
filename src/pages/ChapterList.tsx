@@ -166,7 +166,7 @@ const ChapterList = () => {
 
       <footer className="border-t border-border mt-16 py-8 px-6 text-center">
         <p className="text-xs text-muted-foreground font-sans">
-          © {new Date().getFullYear()} PikPuk Classics Library · A curated collection of world literature
+          © {new Date().getFullYear()} Inktella Classics Library · A curated collection of world literature
         </p>
       </footer>
     </div>

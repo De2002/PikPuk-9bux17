@@ -47,7 +47,7 @@ const AdminDashboard = () => {
       {/* Header */}
       <div className="mb-8">
         <h1 className="font-serif text-2xl font-bold text-[#18181b]">Overview</h1>
-        <p className="text-sm text-[#71717a] font-sans mt-1">Welcome to the PikPuk admin panel.</p>
+        <p className="text-sm text-[#71717a] font-sans mt-1">Welcome to the Inktella admin panel.</p>
       </div>
 
       {/* Stats grid */}

@@ -37,13 +37,13 @@ const About = () => (
           <div className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center">
             <Feather className="w-5 h-5 text-background" />
           </div>
-          <span className="text-xs font-sans uppercase tracking-widest text-background/50">About PikPuk</span>
+          <span className="text-xs font-sans uppercase tracking-widest text-background/50">About Inktella</span>
         </div>
         <h1 className="font-serif text-4xl md:text-5xl font-bold text-background leading-tight mb-5">
           A Home for Classic Literature
         </h1>
         <p className="text-background/70 font-sans text-base leading-relaxed max-w-xl">
-          PikPuk is a free, curated online library dedicated to the great novels and short stories of world literature.
+          Inktella is a free, curated online library dedicated to the great novels and short stories of world literature.
           We believe the classics belong to everyone — and we're building the most enjoyable place to read them.
         </p>
       </div>
@@ -63,12 +63,12 @@ const About = () => (
             dry introductions, or texts hidden behind academic paywalls.
           </p>
           <p>
-            PikPuk was built to change that. We present the world's greatest novels and short stories in a
+            Inktella was built to change that. We present the world's greatest novels and short stories in a
             clean, modern reading environment — with rich author profiles, thoughtful synopses, and contextual
             notes to help you step inside each work with confidence.
           </p>
           <p>
-            Whether you're returning to a beloved text or encountering Dostoevsky for the first time, PikPuk
+            Whether you're returning to a beloved text or encountering Dostoevsky for the first time, Inktella
             is designed to meet you where you are.
           </p>
         </div>
@@ -107,8 +107,8 @@ const About = () => (
             All content is mobile-optimised and accessible without an account.
           </p>
           <p>
-            Create a free account to bookmark favourites and build your personal reading list. Your library
-            is available wherever you pick up PikPuk next.
+            Create a free account to bookmark favourites and build your personal reading list.             Your library
+            is available wherever you pick up Inktella next.
           </p>
         </div>
       </section>
