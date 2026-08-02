@@ -111,12 +111,12 @@ interface NovelFormProps {
 
 function NovelForm({ initial, authors, onSave, onCancel, saving }: NovelFormProps) {
   const [form, setForm] = useState<Omit<CmsStory, "sort_order">>({
-    id: "", author_id: "", title: "", type: "novel",
+    id: "", author_id: "", title: "",
     year: null, genre: "", cover_url: "", description: "",
     synopsis: null, themes: [], pages: null, read_time: null,
     free_chapters: 2, is_active: true,
     ...initial,
-    type: "novel",
+    type: "novel" as const,
   });
   const [autoId, setAutoId] = useState(!initial?.id);
   const [quotes, setQuotes] = useState<{ text: string; context: string }[]>(
@@ -262,12 +262,12 @@ interface ShortStoryFormProps {
 
 function ShortStoryForm({ initial, authors, onSave, onCancel, saving }: ShortStoryFormProps) {
   const [form, setForm] = useState<Omit<CmsStory, "sort_order">>({
-    id: "", author_id: "", title: "", type: "short-story",
+    id: "", author_id: "", title: "",
     year: null, genre: "", cover_url: "", description: "",
     synopsis: null, themes: [], pages: null, read_time: null,
     free_chapters: 0, is_active: true,
     ...initial,
-    type: "short-story",
+    type: "short-story" as const,
   });
   const [autoId, setAutoId] = useState(!initial?.id);
   const [quotes, setQuotes] = useState<{ text: string; context: string }[]>(
