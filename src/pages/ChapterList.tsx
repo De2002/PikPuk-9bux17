@@ -1,4 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { AUTHORS } from "@/constants/authors";
 import { STORY_CHAPTERS } from "@/constants/chapters";
 import Navbar from "@/components/layout/Navbar";
@@ -33,6 +35,29 @@ const ChapterList = () => {
 
   const chapters: Chapter[] = id ? STORY_CHAPTERS[id] ?? [] : [];
 
+  // SEO for chapter list
+  useEffect(() => {
+    if (!storyTitle) return;
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "Book",
+      "name": storyTitle,
+      "author": { "@type": "Person", "name": authorName },
+      "numberOfPages": chapters.length,
+      "url": `https://inktella.onspace.app/story/${id}/chapters`,
+      "hasPart": chapters.map(ch => ({
+        "@type": "PublicationIssue",
+        "headline": ch.title,
+        "pageStart": ch.number,
+      })),
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify(schema, null, 2);
+    document.head.appendChild(script);
+    return () => script.remove();
+  }, [storyTitle, chapters, authorName, id]);
+
   if (!storyTitle) {
     return (
       <div className="min-h-screen bg-background">
@@ -46,6 +71,18 @@ const ChapterList = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Chapters — {storyTitle} by {authorName}</title>
+        <meta name="description" content={`Read all chapters of ${storyTitle} by ${authorName}. ${chapters.length} chapters available in this ${storyType === "novel" ? "novel" : "story"}.`} />
+        <meta name="keywords" content={`${storyTitle}, ${authorName}, chapters, classics, book`} />
+        <meta property="og:type" content="book" />
+        <meta property="og:title" content={`Chapters — ${storyTitle}`} />
+        <meta property="og:description" content={`${chapters.length} chapters of ${storyTitle} by ${authorName}`} />
+        <meta property="og:url" content={`https://inktella.onspace.app/story/${id}/chapters`} />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={`Chapters — ${storyTitle}`} />
+        <meta name="twitter:description" content={`Read ${chapters.length} chapters of ${storyTitle} by ${authorName}`} />
+      </Helmet>
       <Navbar />
 
       {/* Header */}

@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { useCmsAuthors } from "@/hooks/useCmsData";
 import Navbar from "@/components/layout/Navbar";
 import StoryCard from "@/components/features/StoryCard";
@@ -51,8 +52,50 @@ const AuthorDetail = () => {
     ? `${author.born} – ${author.died}`
     : `b. ${author.born}`;
 
+  // SEO Metadata
+  useEffect(() => {
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": author.name,
+      "birthDate": String(author.born),
+      "deathDate": author.died ? String(author.died) : undefined,
+      "nationality": author.nationality,
+      "image": author.portrait,
+      "description": author.shortBio,
+      "url": `https://inktella.onspace.app/author/${author.id}`,
+      "knowsAbout": author.stories.map(s => ({
+        "@type": s.type === "novel" ? "Book" : "CreativeWork",
+        "name": s.title,
+        "genre": s.genre,
+      })),
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify(schema, null, 2);
+    document.head.appendChild(script);
+    return () => script.remove();
+  }, [author]);
+
+  const description = `${author.name} (${lifespan}) - ${author.shortBio}`;
+  const authorWorks = `${novels.length} novel${novels.length !== 1 ? "s" : ""} and ${shortStories.length} short stor${shortStories.length !== 1 ? "ies" : "y"}`;
+
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{author.name} — Inktella Classics</title>
+        <meta name="description" content={`${author.name}, ${author.nationality} author. Explore ${authorWorks} by this classic author.`} />
+        <meta name="keywords" content={`${author.name}, ${author.nationality}, author, classics, ${author.stories.map(s => s.genre).join(", ")}`} />
+        <meta property="og:type" content="profile" />
+        <meta property="og:url" content={`https://inktella.onspace.app/author/${author.id}`} />
+        <meta property="og:title" content={`${author.name} — Inktella`} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={author.portrait} />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={`${author.name} — Inktella`} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={author.portrait} />
+      </Helmet>
       <Navbar />
 
       {/* Author Header */}

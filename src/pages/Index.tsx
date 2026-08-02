@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useCmsAuthors } from "@/hooks/useCmsData";
 import AuthorCard from "@/components/features/AuthorCard";
 import Navbar from "@/components/layout/Navbar";
@@ -19,6 +20,15 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Inktella — Classics Library | Free Novels & Short Stories</title>
+        <meta name="description" content={`Read classic novels and short stories online for free. Browse ${authors.length} authors with ${totalWorks} works in the Inktella Classics Library.`} />
+        <meta name="keywords" content="classics library, novels, short stories, free books, classic literature, authors, public domain" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://inktella.onspace.app/" />
+        <meta property="og:title" content="Inktella — Classics Library" />
+        <meta property="og:description" content="Curated library of classic novels and short stories. Read online for free." />
+      </Helmet>
       <Navbar />
 
       {/* Hero Banner */}
