@@ -1,5 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useCmsAuthors } from "@/hooks/useCmsData";
 import { Story, Author } from "@/types";
 import Navbar from "@/components/layout/Navbar";
@@ -67,12 +68,10 @@ const StoryDetail = () => {
       .then(({ data }) => setBookmarked(!!data));
   }, [user, id]);
 
-  // JSON-LD schema + meta
+  // JSON-LD schema
   useEffect(() => {
     if (!found) return;
     const { story, author } = found;
-    const existing = document.getElementById("story-schema");
-    if (existing) existing.remove();
     const schema = {
       "@context": "https://schema.org",
       "@type": story.type === "novel" ? "Book" : "CreativeWork",
@@ -98,13 +97,9 @@ const StoryDetail = () => {
     script.type = "application/ld+json";
     script.textContent = JSON.stringify(schema, null, 2);
     document.head.appendChild(script);
-      document.title = `${story.title} by ${author.name} — Inktella Classics`;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute("content", story.description);
     return () => {
       const toRemove = document.getElementById("story-schema");
       if (toRemove) toRemove.remove();
-      document.title = "Inktella — Classics Library";
     };
   }, [found]);
 
@@ -161,6 +156,23 @@ const StoryDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{story.title} by {author.name} — Inktella</title>
+        <meta name="description" content={story.description} />
+        <meta name="keywords" content={`${story.title}, ${author.name}, ${story.genre}, ${story.type === "novel" ? "novel" : "short story"}, classics`} />
+        <meta property="og:type" content="book" />
+        <meta property="og:url" content={`https://inktella.onspace.app/story/${story.id}`} />
+        <meta property="og:title" content={`${story.title} by ${author.name}`} />
+        <meta property="og:description" content={story.synopsis || story.description} />
+        <meta property="og:image" content={story.coverUrl} />
+        <meta property="book:author" content={author.name} />
+        <meta property="book:release_date" content={String(story.year)} />
+        <meta property="book:tag" content={story.genre} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${story.title} by ${author.name}`} />
+        <meta name="twitter:description" content={story.description} />
+        <meta name="twitter:image" content={story.coverUrl} />
+      </Helmet>
       <Navbar />
 
       {/* Hero Header */}

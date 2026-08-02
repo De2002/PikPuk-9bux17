@@ -1,5 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { Helmet } from "react-helmet-async";
 import { AUTHORS } from "@/constants/authors";
 import { STORY_CHAPTERS } from "@/constants/chapters";
 import { Chapter, Story } from "@/types";
@@ -185,6 +186,30 @@ const ChapterReader = () => {
     setTheme(order[(order.indexOf(theme) + 1) % order.length]);
   };
 
+  // SEO for chapter
+  useEffect(() => {
+    if (!chapter) return;
+    const description = `Chapter ${chapter.number}: ${chapter.title} of ${storyTitle} by ${authorName}`;
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "PublicationIssue",
+      "headline": chapter.title,
+      "description": description,
+      "isPartOf": {
+        "@type": "Book",
+        "name": storyTitle,
+        "author": { "@type": "Person", "name": authorName },
+      },
+      "pageStart": chapter.number,
+      "url": `https://inktella.onspace.app/story/${id}/chapter/${chapter.number}`,
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify(schema, null, 2);
+    document.head.appendChild(script);
+    return () => script.remove();
+  }, [chapter, storyTitle, authorName, id]);
+
   if (!chapter) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
@@ -240,12 +265,26 @@ const ChapterReader = () => {
   const iconClusterTop = Math.max(80, Math.min(iconPos.y - 70, window.innerHeight - 180));
   const iconClusterLeft = Math.min(iconPos.x + 16, window.innerWidth - 56);
 
+  const chapterDescription = `${chapter.title} - Chapter ${chapter.number} of ${storyTitle} by ${authorName}`;
+
   return (
     <div
       className={cn("min-h-screen transition-colors duration-300", t.bg)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
+      <Helmet>
+        <title>{chapter.title} - Chapter {chapter.number} — {storyTitle}</title>
+        <meta name="description" content={`Read Chapter ${chapter.number}: ${chapter.title} from ${storyTitle} by ${authorName}`} />
+        <meta name="keywords" content={`${storyTitle}, ${authorName}, chapter, ${chapter.number}, classics, book`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={`Chapter ${chapter.number}: ${chapter.title}`} />
+        <meta property="og:description" content={chapterDescription} />
+        <meta property="og:url" content={`https://inktella.onspace.app/story/${id}/chapter/${chapter.number}`} />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={`Chapter ${chapter.number}: ${chapter.title}`} />
+        <meta name="twitter:description" content={chapterDescription} />
+      </Helmet>
       {/* Swipe feedback overlay */}
       {swipeHint && (
         <div className={cn("fixed inset-y-0 z-50 flex items-center px-4 pointer-events-none", swipeHint === "prev" ? "left-0" : "right-0")}>

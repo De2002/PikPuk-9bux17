@@ -1,5 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { Helmet } from "react-helmet-async";
 import { AUTHORS } from "@/constants/authors";
 import { Story, Author } from "@/types";
 import { ArrowLeft, BookOpen, Clock, Minus, Plus, Sun, Moon, MessageSquare, Users, BookA } from "lucide-react";
@@ -100,11 +101,24 @@ const ShortStoryReader = () => {
 
   useEffect(() => {
     if (!story || !author) return;
-    document.title = `${story.title} by ${author.name} — Inktella Classics`;
     window.scrollTo({ top: 0 });
     // Record the read for guests
     if (!user && id) recordSSRead(id);
-    return () => { document.title = "Inktella — Classics Library"; };
+    // SEO schema
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      "name": story.title,
+      "author": { "@type": "Person", "name": author.name },
+      "description": story.synopsis || story.description,
+      "genre": story.genre,
+      "url": `https://inktella.onspace.app/story/${id}/read`,
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify(schema, null, 2);
+    document.head.appendChild(script);
+    return () => script.remove();
   }, [story, author, user, id]);
 
   useEffect(() => {
@@ -182,6 +196,20 @@ const ShortStoryReader = () => {
 
   return (
     <div className={cn("min-h-screen transition-colors duration-300", t.bg)}>
+      <Helmet>
+        <title>{story.title} by {author.name} — Inktella</title>
+        <meta name="description" content={`Read ${story.title} by ${author.name}. A ${story.genre} short story in the Inktella Classics Library.`} />
+        <meta name="keywords" content={`${story.title}, ${author.name}, ${story.genre}, short story, classics`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={`${story.title} by ${author.name}`} />
+        <meta property="og:description" content={story.synopsis || story.description} />
+        <meta property="og:url" content={`https://inktella.onspace.app/story/${id}/read`} />
+        <meta property="og:image" content={story.coverUrl} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${story.title} by ${author.name}`} />
+        <meta name="twitter:description" content={story.synopsis || story.description} />
+        <meta name="twitter:image" content={story.coverUrl} />
+      </Helmet>
       {/* Scroll progress bar */}
       <div className="fixed top-0 left-0 right-0 h-0.5 z-50 bg-transparent">
         <div className={cn("h-full transition-all duration-150", t.progress)} style={{ width: `${scrollProgress}%` }} />
