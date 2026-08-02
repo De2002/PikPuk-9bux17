@@ -28,6 +28,7 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
+          <img src="/favicon.png" alt="Inktella" className="w-6 h-6" />
           <span className="font-serif text-lg font-bold tracking-tight text-foreground">
             Inktella
           </span>
