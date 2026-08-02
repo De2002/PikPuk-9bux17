@@ -89,22 +89,22 @@ const StoryDetail = () => {
       "description": story.synopsis || story.description,
       "numberOfPages": story.pages,
       "inLanguage": "en",
-      "publisher": { "@type": "Organization", "name": "PikPuk Classics Library" },
+      "publisher": { "@type": "Organization", "name": "Inktella Classics Library" },
       "image": story.coverUrl,
-      "url": `https://pikpuk.onspace.app/story/${story.id}`,
+      "url": `https://inktella.onspace.app/story/${story.id}`,
     };
     const script = document.createElement("script");
     script.id = "story-schema";
     script.type = "application/ld+json";
     script.textContent = JSON.stringify(schema, null, 2);
     document.head.appendChild(script);
-    document.title = `${story.title} by ${author.name} — PikPuk Classics`;
+      document.title = `${story.title} by ${author.name} — Inktella Classics`;
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.setAttribute("content", story.description);
     return () => {
       const toRemove = document.getElementById("story-schema");
       if (toRemove) toRemove.remove();
-      document.title = "PikPuk — Classics Library";
+      document.title = "Inktella — Classics Library";
     };
   }, [found]);
 

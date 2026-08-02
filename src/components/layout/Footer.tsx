@@ -9,7 +9,7 @@ const Footer = () => (
         <div className="w-6 h-6 rounded-full bg-foreground flex items-center justify-center">
           <Feather className="w-3 h-3 text-background" />
         </div>
-        <span className="font-serif text-sm font-bold text-foreground">PikPuk</span>
+        <span className="font-serif text-sm font-bold text-foreground">Inktella</span>
         <span className="text-xs text-muted-foreground font-sans">
           © {new Date().getFullYear()} · Classics Library
         </span>

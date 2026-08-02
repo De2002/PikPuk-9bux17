@@ -32,7 +32,7 @@ const Navbar = () => {
             <Feather className="w-4 h-4 text-background" />
           </div>
           <span className="font-serif text-xl font-bold tracking-tight text-foreground">
-            PikPuk
+            Inktella
           </span>
           <span className="text-xs text-muted-foreground font-sans tracking-widest uppercase ml-1 hidden sm:block">
             Classics Library

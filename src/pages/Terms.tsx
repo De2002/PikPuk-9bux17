@@ -41,14 +41,14 @@ const Terms = () => (
     <div className="max-w-3xl mx-auto px-6 py-14 space-y-12">
 
       <p className="font-sans text-base text-foreground/70 leading-relaxed border-l-4 border-border pl-5">
-        By accessing or using PikPuk ("the Service"), you agree to be bound by these Terms of Service.
+        By accessing or using Inktella ("the Service"), you agree to be bound by these Terms of Service.
         Please read them carefully before using the platform. If you do not agree to these terms,
         you may not use the Service.
       </p>
 
       <Section title="1. Use of the Service">
         <p>
-          PikPuk provides a free online library of classical literature for personal, non-commercial reading
+          Inktella provides a free online library of classical literature for personal, non-commercial reading
           purposes. You may use the Service to read, browse, and bookmark works as permitted by these terms.
         </p>
         <p>
@@ -71,20 +71,20 @@ const Terms = () => (
         </p>
         <p>
           You agree to provide accurate information when creating an account and to notify us promptly
-          of any unauthorized use. PikPuk reserves the right to suspend or terminate accounts that
+          of any unauthorized use. Inktella reserves the right to suspend or terminate accounts that
           violate these terms.
         </p>
       </Section>
 
       <Section title="3. Intellectual Property">
         <p>
-          The literary works available on PikPuk are in the public domain and are reproduced for free
+          The literary works available on Inktella are in the public domain and are reproduced for free
           public access. All original site content — including design, branding, annotations, synopses,
-          and editorial text — is the property of PikPuk and may not be reproduced without prior
+          and editorial text — is the property of Inktella and may not be reproduced without prior
           written consent.
         </p>
         <p>
-          "PikPuk," the PikPuk logo, and related marks are trademarks of the PikPuk Classics Library.
+          "Inktella," the Inktella logo, and related marks are trademarks of the Inktella Classics Library.
           Unauthorized use of these marks is prohibited.
         </p>
       </Section>
@@ -92,18 +92,18 @@ const Terms = () => (
       <Section title="4. Content Accuracy">
         <p>
           We make reasonable efforts to ensure the accuracy of literary texts and editorial content on
-          PikPuk. However, we cannot guarantee that all content is error-free. If you identify an
+          Inktella. However, we cannot guarantee that all content is error-free. If you identify an
           inaccuracy, please contact us so we can investigate.
         </p>
         <p>
-          PikPuk does not warrant that the Service will be uninterrupted, error-free, or free of
+          Inktella does not warrant that the Service will be uninterrupted, error-free, or free of
           harmful components. Use of the Service is at your own risk.
         </p>
       </Section>
 
       <Section title="5. Limitation of Liability">
         <p>
-          To the fullest extent permitted by law, PikPuk and its operators shall not be liable for any
+          To the fullest extent permitted by law, Inktella and its operators shall not be liable for any
           indirect, incidental, special, consequential, or punitive damages arising out of or related to
           your use of the Service, even if advised of the possibility of such damages.
         </p>
@@ -115,7 +115,7 @@ const Terms = () => (
 
       <Section title="6. Third-Party Services">
         <p>
-          The Service may contain links to third-party websites or services not operated by PikPuk.
+          The Service may contain links to third-party websites or services not operated by Inktella.
           We have no control over and accept no responsibility for the content or practices of
           third-party sites. Accessing such links is at your own risk.
         </p>
@@ -123,7 +123,7 @@ const Terms = () => (
 
       <Section title="7. Modifications to Terms">
         <p>
-          PikPuk reserves the right to modify these Terms of Service at any time. We will indicate the
+          Inktella reserves the right to modify these Terms of Service at any time. We will indicate the
           date of the most recent revision at the top of this page. Your continued use of the Service
           following any changes constitutes acceptance of the updated terms.
         </p>
@@ -140,8 +140,8 @@ const Terms = () => (
       <Section title="9. Contact">
         <p>
           If you have any questions about these Terms of Service, please contact us at{" "}
-          <a href="mailto:hello@pikpuk.com" className="underline underline-offset-2 text-foreground hover:text-foreground/70 transition-colors">
-            hello@pikpuk.com
+          <a href="mailto:hello@inktella.com" className="underline underline-offset-2 text-foreground hover:text-foreground/70 transition-colors">
+            hello@inktella.com
           </a>.
         </p>
       </Section>
