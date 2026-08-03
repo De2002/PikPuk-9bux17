@@ -11,6 +11,7 @@ const NAV = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/stories", label: "Stories", icon: BookOpen, exact: false },
   { href: "/admin/authors", label: "Authors", icon: Users, exact: false },
+  { href: "/admin/poetry", label: "Poetry", icon: Feather, exact: false },
 ];
 
 interface AdminLayoutProps {

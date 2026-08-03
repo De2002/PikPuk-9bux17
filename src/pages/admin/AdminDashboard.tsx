@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AUTHORS } from "@/constants/authors";
 import { supabase } from "@/lib/supabase";
-import { BookOpen, BookMarked, Users, Bookmark, TrendingUp } from "lucide-react";
+import { BookOpen, BookMarked, Users, Bookmark, TrendingUp, Feather } from "lucide-react";
 
 interface Stats {
   totalAuthors: number;
@@ -20,17 +20,22 @@ const AdminDashboard = () => {
     totalUsers: 0,
   });
 
+  const [poetryStats, setPoetryStats] = useState({ poets: 0, poems: 0 });
+
   useEffect(() => {
     // Fetch dynamic stats
     Promise.all([
       supabase.from("bookmarks").select("id", { count: "exact", head: true }),
       supabase.from("user_profiles").select("id", { count: "exact", head: true }),
-    ]).then(([bRes, uRes]) => {
+      supabase.from("cms_poets").select("id", { count: "exact", head: true }),
+      supabase.from("cms_poems").select("id", { count: "exact", head: true }),
+    ]).then(([bRes, uRes, poetsRes, poemsRes]) => {
       setStats((s) => ({
         ...s,
         totalBookmarks: bRes.count ?? 0,
         totalUsers: uRes.count ?? 0,
       }));
+      setPoetryStats({ poets: poetsRes.count ?? 0, poems: poemsRes.count ?? 0 });
     });
   }, []);
 
@@ -40,6 +45,8 @@ const AdminDashboard = () => {
     { label: "Short Stories", value: stats.totalShortStories, icon: BookOpen, color: "bg-amber-50 text-amber-600" },
     { label: "Registered Users", value: stats.totalUsers, icon: TrendingUp, color: "bg-emerald-50 text-emerald-600" },
     { label: "Total Bookmarks", value: stats.totalBookmarks, icon: Bookmark, color: "bg-rose-50 text-rose-600" },
+    { label: "Poets", value: poetryStats.poets, icon: Feather, color: "bg-violet-50 text-violet-600" },
+    { label: "Poems", value: poetryStats.poems, icon: Feather, color: "bg-violet-50 text-violet-500" },
   ];
 
   return (

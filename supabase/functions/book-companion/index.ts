@@ -13,44 +13,6 @@ interface CompanionRequest {
   passage?: string;
 }
 
-interface AiCallOptions {
-  url: string;
-  apiKey: string;
-  model: string;
-  systemPrompt: string;
-  userMessage: string;
-}
-
-// ── Shared AI call helper ─────────────────────────────────────────────────────
-
-async function callAI({ url, apiKey, model, systemPrompt, userMessage }: AiCallOptions): Promise<{ ok: boolean; content?: string; status?: number; errorText?: string }> {
-  const res = await fetch(`${url}/chat/completions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userMessage },
-      ],
-      max_tokens: 600,
-      temperature: 0.7,
-    }),
-  });
-
-  if (!res.ok) {
-    const errText = await res.text();
-    return { ok: false, status: res.status, errorText: errText };
-  }
-
-  const data = await res.json();
-  const content = data.choices?.[0]?.message?.content ?? "";
-  return { ok: true, content };
-}
-
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -58,8 +20,6 @@ Deno.serve(async (req: Request) => {
 
   const onspaceApiKey  = Deno.env.get("ONSPACE_AI_API_KEY");
   const onspaceBaseUrl = Deno.env.get("ONSPACE_AI_BASE_URL");
-  const geminiApiKey   = Deno.env.get("GEMINI_API_KEY");
-  const openrouterKey  = Deno.env.get("OPENROUTER_API_KEY");
   const supabaseUrl    = Deno.env.get("SUPABASE_URL") ?? "";
   const supabaseKey    = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
@@ -181,71 +141,40 @@ Respond in this exact JSON format (nothing else):
     userMessage = `Explain this word/phrase from the text: "${word || "unknown"}"${passage ? `\nContext from the book: "${passage}"` : ""}`;
   }
 
-  // Helper: try all providers in sequence, return first success
-  async function tryProviders(): Promise<{ ok: boolean; content?: string }> {
+  // ── Call OnSpace AI ───────────────────────────────────────────────────────
+  console.log(`[book-companion] Calling OnSpace AI | query_type=${query_type}`);
 
-    // ── Attempt 1: Google Gemini (primary — free tier with valid key) ─────────
-    if (geminiApiKey) {
-      console.log(`[book-companion] Attempt 1 — Gemini | query_type=${query_type}`);
-      const r = await callAI({
-        url: "https://generativelanguage.googleapis.com/v1beta/openai",
-        apiKey: geminiApiKey,
-        model: "gemini-2.0-flash",
-        systemPrompt,
-        userMessage,
-      });
-      if (r.ok && r.content) {
-        console.log("[book-companion] Gemini succeeded");
-        return r;
-      }
-      console.warn("[book-companion] Gemini failed:", r.status, r.errorText?.substring(0, 200));
-    }
-
-    // ── Attempt 2: OnSpace AI ─────────────────────────────────────────────────
-    console.log(`[book-companion] Attempt 2 — OnSpace AI | query_type=${query_type}`);
-    const r2 = await callAI({
-      url: onspaceBaseUrl,
-      apiKey: onspaceApiKey,
+  const res = await fetch(`${onspaceBaseUrl}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${onspaceApiKey}`,
+    },
+    body: JSON.stringify({
       model: "google/gemini-3-flash-preview",
-      systemPrompt,
-      userMessage,
-    });
-    if (r2.ok && r2.content) {
-      console.log("[book-companion] OnSpace AI succeeded");
-      return r2;
-    }
-    console.warn("[book-companion] OnSpace AI failed:", r2.status, r2.errorText?.substring(0, 200));
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userMessage },
+      ],
+      max_tokens: 600,
+      temperature: 0.7,
+    }),
+  });
 
-    // ── Attempt 3: OpenRouter free tier ───────────────────────────────────────
-    if (openrouterKey) {
-      console.log("[book-companion] Attempt 3 — OpenRouter free tier");
-      const r3 = await callAI({
-        url: "https://openrouter.ai/api/v1",
-        apiKey: openrouterKey,
-        model: "openrouter/auto",
-        systemPrompt,
-        userMessage,
-      });
-      if (r3.ok && r3.content) {
-        console.log("[book-companion] OpenRouter succeeded");
-        return r3;
-      }
-      console.error("[book-companion] OpenRouter failed:", r3.errorText?.substring(0, 200));
-    }
-
-    return { ok: false };
+  if (!res.ok) {
+    const errText = await res.text();
+    console.error("[book-companion] OnSpace AI failed:", res.status, errText.substring(0, 200));
+    return new Response(
+      JSON.stringify({ error: "Service temporarily unavailable. Please try again shortly." }),
+      { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   }
 
-  const result = await tryProviders();
+  const data = await res.json();
+  const content = data.choices?.[0]?.message?.content ?? "";
+  console.log("[book-companion] OnSpace AI succeeded");
 
-  if (result.ok && result.content) {
-    return buildResponse(query_type, result.content, corsHeaders);
-  }
-
-  return new Response(
-    JSON.stringify({ error: "Service temporarily unavailable. Please try again shortly." }),
-    { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-  );
+  return buildResponse(query_type, content, corsHeaders);
 });
 
 // ── Response builder ──────────────────────────────────────────────────────────

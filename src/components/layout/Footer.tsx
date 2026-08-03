@@ -17,6 +17,9 @@ const Footer = () => (
 
       {/* Links */}
       <nav className="flex items-center gap-5 flex-wrap justify-center">
+        <Link to="/poems" className="text-xs font-sans text-muted-foreground hover:text-foreground transition-colors">
+          Poetry
+        </Link>
         <Link to="/about" className="text-xs font-sans text-muted-foreground hover:text-foreground transition-colors">
           About
         </Link>
