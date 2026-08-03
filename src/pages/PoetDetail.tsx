@@ -131,17 +131,17 @@ const PoetDetail = () => {
 
       {/* Content */}
       <div className="max-w-6xl mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
 
           {/* Left — Biography (wider on desktop, occupies till middle) */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-5">
             <h2 className="font-serif text-xl font-semibold text-foreground mb-4">Biography</h2>
             <div className="h-px bg-border mb-4" />
             <BiographySection content={poet.full_bio || poet.short_bio || null} />
           </div>
 
           {/* Right — Poems */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-7">
             <h2 className="font-serif text-xl font-semibold text-foreground mb-4">Poems</h2>
             <div className="h-px bg-border mb-6" />
 
