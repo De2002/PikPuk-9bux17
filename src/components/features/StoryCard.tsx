@@ -1,5 +1,6 @@
 import { Story } from "@/types";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { BookOpen, Clock, Tag } from "lucide-react";
 
 interface StoryCardProps {
@@ -8,6 +9,7 @@ interface StoryCardProps {
 }
 
 const StoryCard = ({ story, storyIndex }: StoryCardProps) => {
+  const [imageLoaded, setImageLoaded] = useState(true);
   const isShortStory = story.type === "short-story";
   const readPath = isShortStory ? `/story/${story.id}/read` : `/story/${story.id}`;
   return (
@@ -22,11 +24,19 @@ const StoryCard = ({ story, storyIndex }: StoryCardProps) => {
           </div>
         ) : (
           <div className="flex-shrink-0 w-16 h-24 rounded-md overflow-hidden bg-muted">
-            <img
-              src={story.coverUrl}
-              alt={story.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            />
+            {imageLoaded && (
+              <img
+                src={story.coverUrl}
+                alt={story.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                onError={() => setImageLoaded(false)}
+              />
+            )}
+            {!imageLoaded && (
+              <div className="w-full h-full bg-gradient-to-br from-foreground/10 to-foreground/5 flex items-center justify-center">
+                <BookOpen className="w-6 h-6 text-foreground/20" />
+              </div>
+            )}
           </div>
         )}
 

@@ -15,6 +15,7 @@ const AuthorDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { authors, loading } = useCmsAuthors();
   const [activeTab, setActiveTab] = useState<StoryTab>("novels");
+  const [portraitLoaded, setPortraitLoaded] = useState(true);
 
   // Derive author directly — no intermediate state, no flash
   const author = loading ? undefined : (authors.find((a) => a.id === id) ?? null);
@@ -114,12 +115,23 @@ const AuthorDetail = () => {
           <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6 sm:gap-7">
             {/* Portrait */}
             <div className="flex-shrink-0">
-              <div className="w-28 h-36 sm:w-32 sm:h-40 rounded-xl overflow-hidden border-2 border-background/20 shadow-xl">
-                <img
-                  src={author.portrait}
-                  alt={author.name}
-                  className="w-full h-full object-cover object-top"
-                />
+              <div className="w-28 h-36 sm:w-32 sm:h-40 rounded-xl overflow-hidden border-2 border-background/20 shadow-xl bg-background/20">
+                {portraitLoaded && (
+                  <img
+                    src={author.portrait}
+                    alt={author.name}
+                    className="w-full h-full object-cover object-top"
+                    onError={() => setPortraitLoaded(false)}
+                  />
+                )}
+                {!portraitLoaded && (
+                  <div className="w-full h-full bg-gradient-to-br from-background/30 to-background/10 flex items-center justify-center">
+                    <div className="text-background/30 text-center">
+                      <div className="text-2xl mb-1">👤</div>
+                      <div className="text-xs">No image</div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
