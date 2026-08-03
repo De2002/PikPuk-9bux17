@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { usePoet } from "@/hooks/usePoetryData";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import BiographySection from "@/components/features/BiographySection";
 import { ArrowLeft, Globe, Calendar, Feather, Loader2, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -129,20 +130,18 @@ const PoetDetail = () => {
       </div>
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+      <div className="max-w-6xl mx-auto px-6 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
 
-          {/* Left — Biography */}
-          <div className="lg:col-span-1">
+          {/* Left — Biography (wider on desktop, occupies till middle) */}
+          <div className="lg:col-span-2">
             <h2 className="font-serif text-xl font-semibold text-foreground mb-4">Biography</h2>
             <div className="h-px bg-border mb-4" />
-            <p className="text-sm text-muted-foreground font-sans leading-[1.8]">
-              {poet.full_bio || poet.short_bio || "No biography available yet."}
-            </p>
+            <BiographySection content={poet.full_bio || poet.short_bio || null} />
           </div>
 
           {/* Right — Poems */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <h2 className="font-serif text-xl font-semibold text-foreground mb-4">Poems</h2>
             <div className="h-px bg-border mb-6" />
 
