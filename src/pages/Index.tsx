@@ -32,7 +32,7 @@ const Index = () => {
       <Navbar />
 
       {/* Hero Banner */}
-      <div className="relative h-64 sm:h-72 md:h-80 overflow-hidden">
+      <div className="relative h-64 sm:h-72 md:h-96 lg:h-[500px] overflow-hidden">
         <img
           src="https://images.pexels.com/photos/936133/pexels-photo-936133.jpeg"
           alt="Inktella Classics Library"
