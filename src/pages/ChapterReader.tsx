@@ -17,7 +17,7 @@ import {
   Users,
   BookA,
 } from "lucide-react";
-import koalaImg from "@/assets/koala-companion.png";
+import inkImg from "@/assets/ink-companion.png";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import AuthModal from "@/components/features/AuthModal";
@@ -288,7 +288,7 @@ const ChapterReader = () => {
               )}
               aria-label="Book Companion"
             >
-              <img src={koalaImg} alt="Book Companion" className="w-full h-full object-cover" />
+              <img src={inkImg} alt="Book Companion" className="w-full h-full object-cover" />
             </button>
           </div>
         </div>

@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { AUTHORS } from "@/constants/authors";
 import { Story, Author } from "@/types";
 import { ArrowLeft, BookOpen, Clock, Minus, Plus, Sun, Moon, MessageSquare, Users, BookA } from "lucide-react";
-import koalaImg from "@/assets/koala-companion.png";
+import inkImg from "@/assets/ink-companion.png";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import SignupSlide from "@/components/features/SignupSlide";
@@ -238,7 +238,7 @@ const ShortStoryReader = () => {
               )}
               aria-label="Book Companion"
             >
-              <img src={koalaImg} alt="Book Companion" className="w-full h-full object-cover" />
+              <img src={inkImg} alt="Book Companion" className="w-full h-full object-cover" />
             </button>
           </div>
         </div>

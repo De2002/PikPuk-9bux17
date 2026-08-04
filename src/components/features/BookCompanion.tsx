@@ -12,7 +12,7 @@ import {
   User,
   AlertCircle,
 } from "lucide-react";
-import koalaImg from "@/assets/koala-companion.png";
+import inkImg from "@/assets/ink-companion.png";
 import { cn } from "@/lib/utils";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -255,7 +255,7 @@ const BookCompanion = ({
         <div className={cn("flex items-center justify-between px-4 py-3 border-b flex-shrink-0", headerBg, dividerStyle)}>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl overflow-hidden flex-shrink-0">
-              <img src={koalaImg} alt="Book Companion" className="w-full h-full object-cover" />
+              <img src={inkImg} alt="Book Companion" className="w-full h-full object-cover" />
             </div>
             <div>
               <p className={cn("font-sans text-sm font-bold leading-tight", textPrimary)}>Book Companion</p>
@@ -332,7 +332,7 @@ const BookCompanion = ({
                     >
                       {msg.role === "assistant" && (
                         <div className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0 mt-0.5">
-                          <img src={koalaImg} alt="" className="w-full h-full object-cover" />
+                          <img src={inkImg} alt="" className="w-full h-full object-cover" />
                         </div>
                       )}
                       <div
@@ -356,7 +356,7 @@ const BookCompanion = ({
                 {askLoading && (
                   <div className="flex gap-2 justify-start">
                     <div className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0">
-                      <img src={koalaImg} alt="" className="w-full h-full object-cover" />
+                      <img src={inkImg} alt="" className="w-full h-full object-cover" />
                     </div>
                     <div className={cn("px-3 py-2.5 rounded-2xl rounded-tl-sm", msgAiBg)}>
                       <div className="flex gap-1 items-center h-4">

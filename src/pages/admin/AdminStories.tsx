@@ -110,17 +110,18 @@ interface NovelFormProps {
 }
 
 function NovelForm({ initial, authors, onSave, onCancel, saving }: NovelFormProps) {
+  const { quotes: initialQuotes, ...initialRest } = (initial ?? {}) as Partial<CmsStory & { quotes: CmsQuote[] }>;
   const [form, setForm] = useState<Omit<CmsStory, "sort_order">>({
     id: "", author_id: "", title: "",
     year: null, genre: "", cover_url: "", description: "",
     synopsis: null, themes: [], pages: null, read_time: null,
     free_chapters: 2, is_active: true,
     type: "novel" as const,
-    ...initial,
+    ...initialRest,
   });
-  const [autoId, setAutoId] = useState(!initial?.id);
+  const [autoId, setAutoId] = useState(!initialRest?.id);
   const [quotes, setQuotes] = useState<{ text: string; context: string }[]>(
-    initial?.quotes?.map(q => ({ text: q.text, context: q.context ?? "" })) ?? []
+    initialQuotes?.map(q => ({ text: q.text, context: q.context ?? "" })) ?? []
   );
 
   const set = (key: keyof typeof form, val: unknown) =>
@@ -261,17 +262,18 @@ interface ShortStoryFormProps {
 }
 
 function ShortStoryForm({ initial, authors, onSave, onCancel, saving }: ShortStoryFormProps) {
+  const { quotes: initialQuotes, ...initialRest } = (initial ?? {}) as Partial<CmsStory & { quotes: CmsQuote[] }>;
   const [form, setForm] = useState<Omit<CmsStory, "sort_order">>({
     id: "", author_id: "", title: "",
     year: null, genre: "", cover_url: "", description: "",
     synopsis: null, themes: [], pages: null, read_time: null,
     free_chapters: 0, is_active: true,
     type: "short-story" as const,
-    ...initial,
+    ...initialRest,
   });
-  const [autoId, setAutoId] = useState(!initial?.id);
+  const [autoId, setAutoId] = useState(!initialRest?.id);
   const [quotes, setQuotes] = useState<{ text: string; context: string }[]>(
-    initial?.quotes?.map(q => ({ text: q.text, context: q.context ?? "" })) ?? []
+    initialQuotes?.map(q => ({ text: q.text, context: q.context ?? "" })) ?? []
   );
 
   const set = (key: keyof typeof form, val: unknown) =>
@@ -456,8 +458,9 @@ const AdminStories = () => {
 
   const handleSave = async (data: Omit<CmsStory, "sort_order">, quotes: { text: string; context: string }[]) => {
     setSaving(true);
+    const { id, author_id, title, type, year, genre, cover_url, description, synopsis, themes, pages, read_time, free_chapters, is_active } = data;
     const payload = {
-      ...data,
+      id, author_id, title, type, year, genre, cover_url, description, synopsis, themes, pages, read_time, free_chapters, is_active,
       sort_order: editing ? editing.sort_order : stories.length,
       updated_at: new Date().toISOString(),
     };
