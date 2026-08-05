@@ -1,6 +1,8 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useCmsAuthors } from "@/hooks/useCmsData";
 import { Story, Author } from "@/types";
 import Navbar from "@/components/layout/Navbar";
@@ -280,9 +282,42 @@ const StoryDetail = () => {
                 Synopsis
               </h2>
               <div className="h-px bg-border mb-5" />
-              <p className="text-base text-foreground/80 font-sans leading-[1.85]">
-                {story.synopsis || story.description}
-              </p>
+              <div className="prose prose-sm max-w-none">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    p: ({ node, ...props }) => (
+                      <p className="text-base text-foreground/80 font-sans leading-[1.85] mb-5" {...props} />
+                    ),
+                    h1: ({ node, ...props }) => (
+                      <h3 className="font-serif text-lg font-semibold text-foreground mt-6 mb-3" {...props} />
+                    ),
+                    h2: ({ node, ...props }) => (
+                      <h4 className="font-serif text-base font-semibold text-foreground mt-5 mb-2" {...props} />
+                    ),
+                    h3: ({ node, ...props }) => (
+                      <h5 className="font-serif text-base font-semibold text-foreground mt-4 mb-2" {...props} />
+                    ),
+                    ul: ({ node, ...props }) => (
+                      <ul className="list-disc list-inside mb-5 text-foreground/80 font-sans text-base space-y-1.5" {...props} />
+                    ),
+                    ol: ({ node, ...props }) => (
+                      <ol className="list-decimal list-inside mb-5 text-foreground/80 font-sans text-base space-y-1.5" {...props} />
+                    ),
+                    strong: ({ node, ...props }) => (
+                      <strong className="font-semibold text-foreground" {...props} />
+                    ),
+                    em: ({ node, ...props }) => (
+                      <em className="italic text-foreground/80" {...props} />
+                    ),
+                    blockquote: ({ node, ...props }) => (
+                      <blockquote className="border-l-[3px] border-accent/60 pl-4 italic text-foreground/70 font-sans my-5" {...props} />
+                    ),
+                  }}
+                >
+                  {story.synopsis || story.description}
+                </ReactMarkdown>
+              </div>
             </section>
 
             {story.quotes && story.quotes.length > 0 && (
