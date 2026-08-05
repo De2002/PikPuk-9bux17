@@ -5,6 +5,7 @@ import { useCmsAuthors } from "@/hooks/useCmsData";
 import Navbar from "@/components/layout/Navbar";
 import StoryCard from "@/components/features/StoryCard";
 import FAQAccordion from "@/components/features/FAQAccordion";
+import BiographySection from "@/components/features/BiographySection";
 import { ArrowLeft, BookOpen, FileText, Globe, Calendar, Loader2 } from "lucide-react";
 import Footer from "@/components/layout/Footer";
 import { cn } from "@/lib/utils";
@@ -164,9 +165,7 @@ const AuthorDetail = () => {
             <section>
               <h2 className="font-serif text-xl font-semibold text-foreground mb-4">Biography</h2>
               <div className="h-px bg-border mb-4" />
-              <p className="text-sm text-muted-foreground font-sans leading-[1.8]">
-                {author.fullBio}
-              </p>
+              <BiographySection content={author.fullBio || author.shortBio} />
             </section>
 
             {/* FAQs */}

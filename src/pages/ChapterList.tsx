@@ -1,12 +1,17 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { AUTHORS } from "@/constants/authors";
-import { STORY_CHAPTERS } from "@/constants/chapters";
+import { supabase } from "@/lib/supabase";
+import {
+  fetchCmsChapters,
+  fetchCmsStories,
+  fetchCmsAuthors,
+  CmsChapter,
+  CmsStory,
+  CmsAuthor,
+} from "@/hooks/useCmsData";
 import Navbar from "@/components/layout/Navbar";
-import { Chapter } from "@/types";
-import { useState } from "react";
-import { ArrowLeft, BookOpen, ChevronDown, ChevronRight } from "lucide-react";
+import { ArrowLeft, BookOpen, ChevronDown, ChevronRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ChapterList = () => {
@@ -14,38 +19,40 @@ const ChapterList = () => {
   const navigate = useNavigate();
   const [openSummary, setOpenSummary] = useState<number | null>(null);
 
-  // Find story + author
-  let storyTitle = "";
-  let authorName = "";
-  let authorId = "";
-  let coverUrl = "";
-  let storyType = "";
+  const [story, setStory] = useState<CmsStory | null>(null);
+  const [author, setAuthor] = useState<CmsAuthor | null>(null);
+  const [chapters, setChapters] = useState<CmsChapter[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  for (const author of AUTHORS) {
-    const found = author.stories.find((s) => s.id === id);
-    if (found) {
-      storyTitle = found.title;
-      authorName = author.name;
-      authorId = author.id;
-      coverUrl = found.coverUrl;
-      storyType = found.type;
-      break;
-    }
-  }
-
-  const chapters: Chapter[] = id ? STORY_CHAPTERS[id] ?? [] : [];
-
-  // SEO for chapter list
   useEffect(() => {
-    if (!storyTitle) return;
+    if (!id) { setLoading(false); return; }
+    setLoading(true);
+
+    Promise.all([
+      fetchCmsStories().then((list) => list.find((s) => s.id === id) ?? null),
+      fetchCmsChapters(id),
+      fetchCmsAuthors(),
+    ]).then(([foundStory, foundChapters, allAuthors]) => {
+      setStory(foundStory);
+      setChapters(foundChapters);
+      if (foundStory) {
+        setAuthor(allAuthors.find((a) => a.id === foundStory.author_id) ?? null);
+      }
+      setLoading(false);
+    });
+  }, [id]);
+
+  // SEO schema — only after data loaded
+  useEffect(() => {
+    if (!story || !author) return;
     const schema = {
       "@context": "https://schema.org",
       "@type": "Book",
-      "name": storyTitle,
-      "author": { "@type": "Person", "name": authorName },
+      "name": story.title,
+      "author": { "@type": "Person", "name": author.name },
       "numberOfPages": chapters.length,
       "url": `https://inktella.onspace.app/story/${id}/chapters`,
-      "hasPart": chapters.map(ch => ({
+      "hasPart": chapters.map((ch) => ({
         "@type": "PublicationIssue",
         "headline": ch.title,
         "pageStart": ch.number,
@@ -56,9 +63,20 @@ const ChapterList = () => {
     script.textContent = JSON.stringify(schema, null, 2);
     document.head.appendChild(script);
     return () => script.remove();
-  }, [storyTitle, chapters, authorName, id]);
+  }, [story, author, chapters, id]);
 
-  if (!storyTitle) {
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!story) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
@@ -69,11 +87,16 @@ const ChapterList = () => {
     );
   }
 
+  const storyTitle = story.title;
+  const authorName = author?.name ?? "";
+  const authorId = author?.id ?? "";
+  const coverUrl = story.cover_url;
+
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>Chapters — {storyTitle} by {authorName}</title>
-        <meta name="description" content={`Read all chapters of ${storyTitle} by ${authorName}. ${chapters.length} chapters available in this ${storyType === "novel" ? "novel" : "story"}.`} />
+        <meta name="description" content={`Read all chapters of ${storyTitle} by ${authorName}. ${chapters.length} chapters available.`} />
         <meta name="keywords" content={`${storyTitle}, ${authorName}, chapters, classics, book`} />
         <meta property="og:type" content="book" />
         <meta property="og:title" content={`Chapters — ${storyTitle}`} />
@@ -92,20 +115,30 @@ const ChapterList = () => {
           <div className="flex items-center gap-2 text-background/50 text-xs font-sans mb-6">
             <button onClick={() => navigate("/")} className="hover:text-background transition-colors">Authors</button>
             <span>/</span>
-            <Link to={`/author/${authorId}`} className="hover:text-background transition-colors">{authorName}</Link>
-            <span>/</span>
+            {authorId && (
+              <>
+                <Link to={`/author/${authorId}`} className="hover:text-background transition-colors">{authorName}</Link>
+                <span>/</span>
+              </>
+            )}
             <Link to={`/story/${id}`} className="hover:text-background transition-colors">{storyTitle}</Link>
             <span>/</span>
             <span className="text-background/80">Chapters</span>
           </div>
 
           <div className="flex gap-6 items-start">
-            <div className="w-20 h-28 rounded-lg overflow-hidden flex-shrink-0 shadow-xl border border-background/10">
-              <img src={coverUrl} alt={storyTitle} className="w-full h-full object-cover" />
+            <div className="w-20 h-28 rounded-lg overflow-hidden flex-shrink-0 shadow-xl border border-background/10 bg-background/10">
+              {coverUrl ? (
+                <img src={coverUrl} alt={storyTitle} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <BookOpen className="w-8 h-8 text-background/30" />
+                </div>
+              )}
             </div>
             <div className="pt-1">
               <p className="text-background/50 font-sans text-xs tracking-widest uppercase mb-2">
-                {storyType === "novel" ? "Novel" : "Short Story"} · {authorName}
+                {story.type === "novel" ? "Novel" : "Short Story"} · {authorName}
               </p>
               <h1 className="font-serif text-2xl md:text-3xl font-bold text-background leading-tight mb-3">
                 {storyTitle}
@@ -125,8 +158,13 @@ const ChapterList = () => {
           <div className="text-center py-20">
             <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-40" />
             <p className="font-serif text-lg text-muted-foreground">Chapters coming soon</p>
-            <p className="text-sm text-muted-foreground font-sans mt-2">This work is being prepared for reading.</p>
-            <Link to={`/story/${id}`} className="inline-flex items-center gap-1.5 mt-6 text-sm font-medium text-foreground hover:text-accent transition-colors">
+            <p className="text-sm text-muted-foreground font-sans mt-2">
+              This work is being prepared for reading.
+            </p>
+            <Link
+              to={`/story/${id}`}
+              className="inline-flex items-center gap-1.5 mt-6 text-sm font-medium text-foreground hover:text-accent transition-colors"
+            >
               <ArrowLeft className="w-4 h-4" /> Back to Story
             </Link>
           </div>
@@ -139,7 +177,9 @@ const ChapterList = () => {
                   key={chapter.number}
                   className={cn(
                     "rounded-xl border transition-all duration-200",
-                    isOpen ? "border-foreground/20 shadow-sm bg-card" : "border-border bg-card hover:border-foreground/15 hover:shadow-sm"
+                    isOpen
+                      ? "border-foreground/20 shadow-sm bg-card"
+                      : "border-border bg-card hover:border-foreground/15 hover:shadow-sm"
                   )}
                 >
                   {/* Chapter Row */}
@@ -149,7 +189,7 @@ const ChapterList = () => {
                       <span className="font-sans text-xs font-bold text-foreground">{chapter.number}</span>
                     </div>
 
-                    {/* Title — links to reader */}
+                    {/* Title */}
                     <Link
                       to={`/story/${id}/chapter/${chapter.number}`}
                       className="flex-1 min-w-0 group"
@@ -159,7 +199,7 @@ const ChapterList = () => {
                       </p>
                     </Link>
 
-                    {/* Read Chapter link */}
+                    {/* Read Chapter */}
                     <Link
                       to={`/story/${id}/chapter/${chapter.number}`}
                       className="flex-shrink-0 hidden sm:flex items-center gap-1.5 text-xs font-sans font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg border border-border hover:border-foreground/20 hover:bg-secondary/50"
@@ -168,19 +208,21 @@ const ChapterList = () => {
                       Read Chapter
                     </Link>
 
-                    {/* Summary toggle */}
-                    <button
-                      onClick={() => setOpenSummary(isOpen ? null : chapter.number)}
-                      className="flex-shrink-0 flex items-center gap-1.5 text-xs font-sans font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg border border-border hover:border-foreground/20 hover:bg-secondary/50"
-                      aria-expanded={isOpen}
-                    >
-                      <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", isOpen && "rotate-180")} />
-                      Summary
-                    </button>
+                    {/* Summary toggle — only show if summary exists */}
+                    {chapter.summary && (
+                      <button
+                        onClick={() => setOpenSummary(isOpen ? null : chapter.number)}
+                        className="flex-shrink-0 flex items-center gap-1.5 text-xs font-sans font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-lg border border-border hover:border-foreground/20 hover:bg-secondary/50"
+                        aria-expanded={isOpen}
+                      >
+                        <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", isOpen && "rotate-180")} />
+                        Summary
+                      </button>
+                    )}
                   </div>
 
                   {/* Expandable Summary */}
-                  {isOpen && (
+                  {isOpen && chapter.summary && (
                     <div className="px-5 pb-5 pt-1 border-t border-border/60">
                       <p className="text-sm text-muted-foreground font-sans leading-[1.8]">
                         {chapter.summary}

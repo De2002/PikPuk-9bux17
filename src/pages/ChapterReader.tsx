@@ -1,8 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { AUTHORS } from "@/constants/authors";
-import { STORY_CHAPTERS } from "@/constants/chapters";
-import { Chapter, Story } from "@/types";
+import { useCmsChapters, fetchCmsStories, fetchCmsAuthors } from "@/hooks/useCmsData";
 import {
   ChevronLeft,
   ChevronRight,
@@ -74,47 +72,37 @@ const ChapterReader = () => {
 
   const chapterIndex = parseInt(chapterNum ?? "1", 10);
 
-  let storyTitle = "";
-  let authorName = "";
-  let storyObj: Story | undefined;
+  // CMS story/author metadata
+  const [storyTitle, setStoryTitle] = useState("");
+  const [authorName, setAuthorName] = useState("");
+  const [freeChapters, setFreeChapters] = useState<number>(99);
+  const [metaLoaded, setMetaLoaded] = useState(false);
 
-  for (const author of AUTHORS) {
-    const found = author.stories.find((s) => s.id === id);
-    if (found) {
-      storyTitle = found.title;
-      authorName = author.name;
-      storyObj = found;
-      break;
-    }
-  }
-
-  const [freeChapters, setFreeChapters] = useState<number>(storyObj?.freeChapters ?? 99);
-  const [settingsLoaded, setSettingsLoaded] = useState(false);
-
-  // Load admin-configured free chapters from DB
   useEffect(() => {
-    if (!id) { setSettingsLoaded(true); return; }
-    import("@/lib/supabase").then(({ supabase }) => {
-      supabase
-        .from("story_settings")
-        .select("free_chapters, is_active")
-        .eq("story_id", id)
-        .maybeSingle()
-        .then(({ data }) => {
-          if (data) setFreeChapters(data.free_chapters);
-          setSettingsLoaded(true);
-        });
+    if (!id) { setMetaLoaded(true); return; }
+    Promise.all([
+      fetchCmsStories().then((list) => list.find((s) => s.id === id) ?? null),
+      fetchCmsAuthors(),
+    ]).then(([foundStory, allAuthors]) => {
+      if (foundStory) {
+        setStoryTitle(foundStory.title);
+        setFreeChapters(foundStory.free_chapters);
+        const a = allAuthors.find((a) => a.id === foundStory.author_id);
+        if (a) setAuthorName(a.name);
+      }
+      setMetaLoaded(true);
     });
   }, [id]);
 
-  const isLocked = settingsLoaded && !user && chapterIndex > freeChapters;
+  const { chapters, loading: chaptersLoading } = useCmsChapters(id);
 
-  const chapters: Chapter[] = id ? STORY_CHAPTERS[id] ?? [] : [];
+  const isLocked = metaLoaded && !chaptersLoading && !user && chapterIndex > freeChapters;
+
   const chapter = chapters.find((c) => c.number === chapterIndex);
   const prevChapter = chapters.find((c) => c.number === chapterIndex - 1);
   const nextChapter = chapters.find((c) => c.number === chapterIndex + 1);
 
-  // Open slide gate when locked chapter is reached
+  // Open slide gate when locked chapter is reached (after meta loads)
   useEffect(() => {
     if (isLocked) {
       const timer = setTimeout(() => setSlideOpen(true), 400);
@@ -186,6 +174,14 @@ const ChapterReader = () => {
   };
 
 
+
+  if (!metaLoaded || chaptersLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-800 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!chapter) {
     return (
